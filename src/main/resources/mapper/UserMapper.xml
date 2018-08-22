@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.tt.pms.data.UserMapper">
+  <resultMap id="BaseResultMap" type="me.tt.pms.core.domain.User">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="system_name" jdbcType="VARCHAR" property="systemName" />
+    <result column="full_name" jdbcType="VARCHAR" property="fullName" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="password_salt" jdbcType="VARCHAR" property="passwordSalt" />
+    <result column="activated" jdbcType="BIT" property="activated" />
+    <result column="enabled" jdbcType="BIT" property="enabled" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime" />
+    <result column="modifier" jdbcType="VARCHAR" property="modifier" />
+    <result column="access_time" jdbcType="TIMESTAMP" property="accessTime" />
+    <result column="access_ip" jdbcType="VARCHAR" property="accessIp" />
+  </resultMap>
+</mapper>

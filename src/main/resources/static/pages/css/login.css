@@ -1,0 +1,11 @@
+/*
+ * Page: Login
+ * ------------
+ */
+.login-box-links{
+    margin-top: 10px;
+    text-align: right;
+}
+.login-box-links>a{
+    margin-right: 10px;
+}

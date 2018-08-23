@@ -1,0 +1,26 @@
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/_contentLayout}">
+<head>
+    <title>错误</title>
+</head>
+<body>
+<th:block layout:fragment="bodySection">
+    <section class="content-header">
+        <h1>错误</h1>
+        <ol class="breadcrumb">
+            <li><a th:href="@{/}"><i class="fa fa-home"></i> 首页</a></li>
+            <li class="active">错误</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="error-page">
+            <div class="error-content">
+                <h3><i class="fa fa-warning text-yellow"></i> 不好了! 页面找不到了。</h3>
+                <p><span th:text="${message}"></span>。您可以<a th:href="${path}">返回页面</a>，或者<a th:href="@{/}">返回首页</a>。</p>
+            </div>
+        </div>
+    </section>
+</th:block>
+</body>
+</html>

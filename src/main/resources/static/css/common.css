@@ -1,0 +1,5 @@
+/* -----404、500、error页面默认样式覆盖-----begin */
+.error-page > .error-content {
+    padding-top: 20px;
+}
+/* -----404、500错误页面默认样式覆盖-----end */

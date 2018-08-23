@@ -1,5 +1,6 @@
 package me.tt.pms.web.controller;
 
+import me.tt.pms.core.AdviceException;
 import me.tt.pms.core.domain.User;
 import me.tt.pms.core.domain.constants.UserLoginResult;
 import me.tt.pms.core.domain.dto.UserLoginDto;
@@ -60,4 +61,12 @@ public class UserController {
         }
     }
 
+    /**
+     * 用户列表页面
+     * @return 用户列表页面路径
+     */
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    public String list() {
+        return "user/list";
+    }
 }

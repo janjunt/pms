@@ -7,6 +7,7 @@
     -->
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="parent_path" jdbcType="VARCHAR" property="parentPath" />
     <result column="level" jdbcType="INTEGER" property="level" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="url" jdbcType="VARCHAR" property="url" />

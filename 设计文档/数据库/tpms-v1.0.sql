@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2018/8/20 15:44:32                           */
+/* Created on:     2018/8/23 16:38:46                           */
 /*==============================================================*/
 
 
@@ -31,6 +31,7 @@ create table menu
 (
    id                   bigint not null auto_increment comment '菜单标识符',
    parent_id            bigint comment '父标识符',
+   parent_path          varchar(200) comment '父菜单路径',
    level                int not null comment '层级（从0开始）',
    name                 varchar(80) not null comment '名称',
    url                  varchar(200) comment '菜单url',
@@ -214,6 +215,9 @@ create table user_role
 
 alter table user_role comment '用户角色关系';
 
+alter table menu add constraint FK_Reference_13 foreign key (parent_id)
+      references menu (id) on delete restrict on update restrict;
+
 alter table menu_permission add constraint FK_Reference_10 foreign key (menu_id)
       references menu (id) on delete restrict on update restrict;
 
@@ -240,6 +244,9 @@ alter table role_permission add constraint FK_Reference_8 foreign key (role_id)
 
 alter table role_permission add constraint FK_Reference_9 foreign key (permission_id)
       references permission (id) on delete restrict on update restrict;
+
+alter table scope add constraint FK_Reference_12 foreign key (parent_id)
+      references scope (id) on delete restrict on update restrict;
 
 alter table user_role add constraint FK_Reference_1 foreign key (user_id)
       references user (id) on delete restrict on update restrict;

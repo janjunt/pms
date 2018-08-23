@@ -18,6 +18,12 @@ public class Menu {
     private Long parentId;
 
     /**
+     * 父菜单路径
+     */
+    @Column(name = "parent_path")
+    private String parentPath;
+
+    /**
      * 层级（从0开始）
      */
     private Integer level;
@@ -121,6 +127,24 @@ public class Menu {
      */
     public void setParentId(Long parentId) {
         this.parentId = parentId;
+    }
+
+    /**
+     * 获取父菜单路径
+     *
+     * @return parent_path - 父菜单路径
+     */
+    public String getParentPath() {
+        return parentPath;
+    }
+
+    /**
+     * 设置父菜单路径
+     *
+     * @param parentPath 父菜单路径
+     */
+    public void setParentPath(String parentPath) {
+        this.parentPath = parentPath;
     }
 
     /**

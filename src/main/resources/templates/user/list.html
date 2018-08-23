@@ -2,17 +2,15 @@
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/_contentLayout}">
 <head>
-    <title>首页</title>
+    <title>用户管理</title>
 </head>
 <body>
 <th:block layout:fragment="bodySection">
     <section class="content-header">
-        <h1>
-            首页
-            <small>hello world</small>
-        </h1>
+        <h1>用户管理</h1>
         <ol class="breadcrumb">
-            <li class="active">首页</li>
+            <li><a th:href="@{/}"><i class="fa fa-home"></i> 首页</a></li>
+            <li class="active">用户管理</li>
         </ol>
     </section>
     <section class="content">

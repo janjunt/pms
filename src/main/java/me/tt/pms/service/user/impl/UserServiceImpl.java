@@ -1,10 +1,7 @@
 package me.tt.pms.service.user.impl;
 
-import me.tt.pms.core.domain.Menu;
 import me.tt.pms.core.domain.User;
 import me.tt.pms.core.domain.constants.UserLoginResult;
-import me.tt.pms.core.domain.dto.MenuDto;
-import me.tt.pms.data.MenuMapper;
 import me.tt.pms.data.UserMapper;
 import me.tt.pms.service.security.EncryptionService;
 import me.tt.pms.service.user.UserService;
@@ -13,7 +10,6 @@ import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.weekend.WeekendSqls;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @ClassName: UserServiceImpl
@@ -25,8 +21,6 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Resource
     private UserMapper userMapper;
-    @Resource
-    private MenuMapper menuMapper;
 
     @Resource
     private EncryptionService encryptionService;
@@ -78,25 +72,5 @@ public class UserServiceImpl implements UserService {
         }
 
         return UserLoginResult.Success;
-    }
-
-    /**
-     * 根据用户id,获取菜单树
-     * @param userId 用户id
-     * @return 菜单树
-     */
-    @Override
-    public List<MenuDto> getMenusTreeByUserId(Long userId){
-        WeekendSqls<Menu> sqls = WeekendSqls.<Menu>custom()
-                .andEqualTo(menu -> menu.getDeleted(), false)
-                .andEqualTo(menu -> menu.getEnabled(), true);
-        Example example = Example.builder(User.class)
-                .where(sqls)
-                .orderByAsc("displayOrder")
-                .build();
-
-        List<Menu> menus = menuMapper.selectByExample(example);
-
-        return null;
     }
 }

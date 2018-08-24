@@ -29,11 +29,4 @@ public interface UserService {
      */
     UserLoginResult validateUser(@NotNull(message = "用户名不能为空") String username,
                                  @NotNull(message = "密码不能为空") String password);
-
-    /**
-     * 根据用户id,获取菜单树
-     * @param userId 用户id
-     * @return 菜单树
-     */
-    List<MenuDto> getMenusTreeByUserId(@NotNull(message = "用户id不能为空") Long userId);
 }

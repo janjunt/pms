@@ -2,6 +2,7 @@ package me.tt.pms.core.domain.dto;
 
 import me.tt.pms.core.domain.Menu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ public class MenuDto extends Menu {
     /**
      * 子菜单
      */
-    private List<MenuDto> childs;
+    private List<MenuDto> childs = new ArrayList<>();
 
 
     public List<MenuDto> getChilds() {

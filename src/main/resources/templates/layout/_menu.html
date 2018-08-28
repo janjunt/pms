@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="menuTree(menus, layer)">
+    <li th:if="${layer==0}" class="active"><a th:href="@{/}"><i class="fa fa-home"></i> 首页</a></li>
+    <li th:each="menuItem : ${menus}" th:class="${#lists.isEmpty(menuItem.childs)}? '' : 'treeview'">
+        <a th:href="${!#lists.isEmpty(menuItem.childs)}? 'javascript:void(0);' : @{${menuItem.url}}">
+            <i th:class="${#strings.isEmpty(menuItem.className)}?(${#lists.isEmpty(menuItem.childs)}?'fa fa-file':'fa fa-folder'):${menuItem.className}"></i> [[${menuItem.name}]]
+            <span th:if="${!#lists.isEmpty(menuItem.childs)}" class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+        </a>
+        <ul th:if="${!#lists.isEmpty(menuItem.childs)}" class="treeview-menu" th:insert="~{this::menuTree(${menuItem.childs}, ${layer+1})}">
+        </ul>
+    </li>
+</th:block>
+</body>
+</html>

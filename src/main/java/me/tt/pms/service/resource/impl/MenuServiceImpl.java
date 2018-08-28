@@ -41,10 +41,10 @@ public class MenuServiceImpl implements MenuService {
      * @return 菜单
      */
     @Override
-    public Menu getMenuBySystemName(String systemName) {
+    public Menu getMenuBySystemName(final String systemName) {
         WeekendSqls<Menu> sqls = WeekendSqls.<Menu>custom()
-                .andEqualTo(menu -> menu.getDeleted(), false)
-                .andEqualTo(menu -> menu.getSystemName(), systemName);
+                .andEqualTo(Menu::getDeleted, false)
+                .andEqualTo(Menu::getSystemName, systemName);
         Example example = Example.builder(Menu.class)
                 .where(sqls).build();
 
@@ -52,33 +52,33 @@ public class MenuServiceImpl implements MenuService {
     }
 
     /**
-     * 获取指定系统名称的菜单和所有子菜单
+     * 根据系统名称，获取所有子菜单
      * @param systemName 菜单系统名称
      * @return 菜单列表
      */
     @Override
-    public List<Menu> getAllMenusBySystemName(String systemName){
-        return getAllMenusBySystemName(systemName, false);
+    public List<Menu> getChildMenusBySystemName(String systemName){
+        return getChildMenusBySystemName(systemName, false);
     }
 
     /**
-     * 获取指定系统名称的菜单和所有子菜单
+     * 根据系统名称，获取所有子菜单
      * @param systemName 菜单系统名称
      * @param showHidden 显示隐藏的菜单
      * @return 菜单列表
      */
     @Override
-    public List<Menu> getAllMenusBySystemName(String systemName, boolean showHidden){
+    public List<Menu> getChildMenusBySystemName(String systemName, boolean showHidden){
         Menu root = getMenuBySystemName(systemName);
         if(root == null){
             throw new AdviceException("没有找到系统名称为'%s'的菜单", systemName);
         }
 
         WeekendSqls<Menu> sqls = WeekendSqls.<Menu>custom()
-                .andEqualTo(menu -> menu.getDeleted(), false)
-                .andLike(menu -> menu.getParentPath(), generateMenuPath(root) + "%");
+                .andEqualTo(Menu::getDeleted, false)
+                .andLike(Menu::getParentPath, generateMenuPath(root) + "%");
         if(!showHidden){
-            sqls.andEqualTo(menu -> menu.getEnabled(), true);
+            sqls.andEqualTo(Menu::getEnabled, true);
         }
         Example example = Example.builder(Menu.class)
                 .where(sqls)
@@ -86,7 +86,6 @@ public class MenuServiceImpl implements MenuService {
                 .build();
 
         List<Menu> menus = menuMapper.selectByExample(example);
-        menus.add(0, root);
 
         return menus;
     }
@@ -109,7 +108,7 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public List<MenuDto> getMenusTreeBySystemNameAndUserId(String systemName, Long userId) {
-        List<Menu> menus = getAllMenusBySystemName(systemName);
+        List<Menu> menus = getChildMenusBySystemName(systemName);
 
         return sortMenusForTree(menus);
     }
@@ -140,12 +139,12 @@ public class MenuServiceImpl implements MenuService {
     private List<MenuDto> sortMenusForTree(List<Menu> menus){
         List<MenuDto> unprocessedMenus = ListUtils.map(menus, this::assembleMenuDto);
         List<MenuDto> menuTree = new ArrayList<>();
-        List<MenuDto> currentMenus = null;
+        List<MenuDto> currentMenus;
         List<MenuDto> lastMenus = new ArrayList<>();
 
         while (unprocessedMenus.size() > 0){
-            currentMenus = ListUtils.filter(unprocessedMenus, m1 -> !ListUtils.any(unprocessedMenus, m2 -> m2.getParentId().equals(m1.getId())));
-            unprocessedMenus.removeIf(m1 -> !ListUtils.any(unprocessedMenus, m2 -> m2.getParentId().equals(m1.getId())));
+            currentMenus = ListUtils.filter(unprocessedMenus, m1 -> null == m1.getParentId() || !ListUtils.any(unprocessedMenus, m2 -> m1.getParentId().equals(m2.getId())));
+            unprocessedMenus.removeIf(m1 -> null == m1.getParentId() || !ListUtils.any(unprocessedMenus, m2 -> m1.getParentId().equals(m2.getId())));
 
             for (MenuDto m1 : currentMenus) {
                 MenuDto pm = ListUtils.find(lastMenus, m2 -> m2.getId().equals(m1.getParentId()));

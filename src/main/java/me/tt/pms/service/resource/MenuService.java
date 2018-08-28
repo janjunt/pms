@@ -24,19 +24,19 @@ public interface MenuService {
 
 
     /**
-     * 获取指定系统名称的菜单和所有子菜单
+     * 根据系统名称，获取所有子菜单
      * @param systemName 菜单系统名称
      * @param showHidden 显示隐藏的菜单
      * @return 菜单列表
      */
-    List<Menu> getAllMenusBySystemName(String systemName, boolean showHidden);
+    List<Menu> getChildMenusBySystemName(String systemName, boolean showHidden);
 
     /**
-     * 获取指定系统名称的菜单和所有子菜单
+     * 根据系统名称，获取所有子菜单
      * @param systemName 菜单系统名称
      * @return 菜单列表
      */
-    List<Menu> getAllMenusBySystemName(String systemName);
+    List<Menu> getChildMenusBySystemName(String systemName);
 
     /**
      * 根据用户id,获取菜单树

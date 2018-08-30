@@ -1,3 +1,19 @@
+/* -----查询条件表单默认样式覆盖-----begin */
+.box-header>form.form-horizontal>.form-group:last-child{
+    margin-bottom: 0;
+}
+/* -----查询条件表单默认样式覆盖-----end */
+
+/* -----覆盖DataTable样式-----begin */
+div.dataTables_info,
+div.dataTables_length{
+    display: inline-block;
+}
+div.dataTables_length {
+    margin-right: 10px;
+}
+/* -----覆盖DataTable样式-----end */
+
 /* -----404、500、error页面默认样式覆盖-----begin */
 .error-page > .error-content {
     padding-top: 20px;

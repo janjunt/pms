@@ -3516,8 +3516,8 @@
 	/**
 	 * Redraw the table - taking account of the various features which are enabled
 	 *  @param {object} oSettings dataTables settings object
-	 *  @param {boolean} [holdPosition] Keep the current paging position. By default
-	 *    the paging is reset to the first page
+	 *  @param {boolean} [holdPosition] Keep the current datatable position. By default
+	 *    the datatable is reset to the first page
 	 *  @memberof DataTable#oApi
 	 */
 	function _fnReDraw( settings, holdPosition )
@@ -4859,7 +4859,7 @@
 	
 	
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-	 * Note that most of the paging logic is done in
+	 * Note that most of the datatable logic is done in
 	 * DataTable.ext.pager
 	 */
 	
@@ -4885,7 +4885,7 @@
 			plugin.fnInit( settings, node, redraw );
 		}
 	
-		/* Add a draw callback for the pagination on first instance, to update the paging display */
+		/* Add a draw callback for the pagination on first instance, to update the datatable display */
 		if ( ! features.p )
 		{
 			node.id = settings.sTableId+'_paginate';
@@ -4978,7 +4978,7 @@
 		}
 		else
 		{
-			_fnLog( settings, 0, "Unknown paging action: "+action, 5 );
+			_fnLog( settings, 0, "Unknown datatable action: "+action, 5 );
 		}
 	
 		var changed = settings._iDisplayStart !== start;
@@ -7459,9 +7459,9 @@
 	 * Set the current page.
 	 *
 	 * Note that if you attempt to show a page which does not exist, DataTables will
-	 * not throw an error, but rather reset the paging.
+	 * not throw an error, but rather reset the datatable.
 	 *
-	 * @param {integer|string} action The paging action to take. This can be one of:
+	 * @param {integer|string} action The datatable action to take. This can be one of:
 	 *  * `integer` - The page index to jump to
 	 *  * `string` - An action to take:
 	 *    * `first` - Jump to first page.
@@ -7485,7 +7485,7 @@
 	/**
 	 * Paging information for the first table in the current context.
 	 *
-	 * If you require paging information for another table, use the `table()` method
+	 * If you require datatable information for another table, use the `table()` method
 	 * with a suitable selector.
 	 *
 	 * @return {object} Object with the following properties set:
@@ -7628,7 +7628,7 @@
 	 * Reload tables from the Ajax data source. Note that this function will
 	 * automatically re-draw the table when the remote data has been loaded.
 	 *
-	 * @param {boolean} [reset=true] Reset (default) or hold the current paging
+	 * @param {boolean} [reset=true] Reset (default) or hold the current datatable
 	 *   position. A full re-sort and re-filter is performed when this method is
 	 *   called, which is why the pagination reset is the default action.
 	 * @returns {DataTables.Api} this
@@ -10422,7 +10422,7 @@
 		 *  @example
 		 *    $(document).ready( function () {
 		 *      $('#example').dataTable( {
-		 *        "paging": false
+		 *        "datatable": false
 		 *      } );
 		 *    } );
 		 */
@@ -11219,7 +11219,7 @@
 	
 	
 		/**
-		 * By default DataTables allows keyboard navigation of the table (sorting, paging,
+		 * By default DataTables allows keyboard navigation of the table (sorting, datatable,
 		 * and filtering) by adding a `tabindex` attribute to the required elements. This
 		 * allows you to tab through the controls and press the enter key to activate them.
 		 * The tabindex is default 0, meaning that the tab follows the flow of the document.
@@ -11987,8 +11987,8 @@
 		/**
 		 * Enable vertical scrolling. Vertical scrolling will constrain the DataTable
 		 * to the given height, and enable scrolling for any data which overflows the
-		 * current viewport. This can be used as an alternative to paging to display
-		 * a lot of data in a small area (although paging and scrolling can both be
+		 * current viewport. This can be used as an alternative to datatable to display
+		 * a lot of data in a small area (although datatable and scrolling can both be
 		 * enabled at the same time). This property can be any CSS unit, or a number
 		 * (in which case it will be treated as a pixel measurement).
 		 *  @type string
@@ -12030,7 +12030,7 @@
 		 * DataTables makes use of renderers when displaying HTML elements for
 		 * a table. These renderers can be added or modified by plug-ins to
 		 * generate suitable mark-up for a site. For example the Bootstrap
-		 * integration plug-in for DataTables uses a paging button renderer to
+		 * integration plug-in for DataTables uses a datatable button renderer to
 		 * display pagination buttons in the mark-up required by Bootstrap.
 		 *
 		 * For further information about the renderers available see
@@ -13022,7 +13022,7 @@
 			/**
 			 * Server-side processing enabled flag - when enabled DataTables will
 			 * get all data from the server for every draw - there is no filtering,
-			 * sorting or paging done on the client-side.
+			 * sorting or datatable done on the client-side.
 			 * Note that this parameter will be set by the initialisation routine. To
 			 * set a default use {@link DataTable.defaults}.
 			 *  @type boolean
@@ -14609,7 +14609,7 @@
 				var activeEl;
 	
 				try {
-					// Because this approach is destroying and recreating the paging
+					// Because this approach is destroying and recreating the datatable
 					// elements, focus is lost on the select button which is bad for
 					// accessibility. So we want to restore focus once the draw has
 					// completed
@@ -15151,7 +15151,7 @@
 	 */
 
 	/**
-	 * Page change event, fired when the paging of the table is altered.
+	 * Page change event, fired when the datatable of the table is altered.
 	 *  @name DataTable#page.dt
 	 *  @event
 	 *  @param {event} e jQuery event object

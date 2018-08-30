@@ -1,6 +1,7 @@
 package me.tt.pms.service.authentication;
 
 import me.tt.pms.core.domain.User;
+import me.tt.pms.core.domain.dto.UserLoginDto;
 
 /**
  * @ClassName: AuthenticationService
@@ -12,10 +13,9 @@ public interface AuthenticationService {
 
     /**
      * 登录
-     * @param user 用户
-     * @param rememberMe 记住我
+     * @param loginDto 用户登录dto
      */
-    void signIn(User user, boolean rememberMe);
+    void signIn(UserLoginDto loginDto);
 
     /**
      * 登出

@@ -2,6 +2,7 @@ package me.tt.pms.service.authentication.impl;
 
 import me.tt.pms.core.domain.User;
 import me.tt.pms.core.domain.dto.MenuDto;
+import me.tt.pms.core.domain.dto.UserLoginDto;
 import me.tt.pms.service.authentication.AuthenticationService;
 import me.tt.pms.service.resource.MenuService;
 import org.apache.shiro.SecurityUtils;
@@ -10,7 +11,6 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,9 +26,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public void signIn(User user, boolean rememberMe) {
+    public void signIn(UserLoginDto loginDto) {
         Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword(), rememberMe);
+        UsernamePasswordToken token = new UsernamePasswordToken(loginDto.getUsername(), loginDto.getPassword(), loginDto.getRememberMe());
 
         subject.login(token);
         List<MenuDto> menus = menuService.getMenusTreeByUserId(0L);

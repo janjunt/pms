@@ -1,11 +1,11 @@
 package me.tt.pms.service.authentication;
 
+import me.tt.pms.core.AdviceException;
 import me.tt.pms.core.domain.User;
+import me.tt.pms.core.domain.constants.UserLoginResult;
 import me.tt.pms.service.user.UserService;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import me.tt.pms.web.AjaxResult;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
@@ -30,12 +30,21 @@ public class DefaultUserRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        String username = (String) authenticationToken.getPrincipal();
+        UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
+        String username = usernamePasswordToken.getUsername();
+        String password = new String(usernamePasswordToken.getPassword());
+
+        UserLoginResult loginResult = userService.validateUser(username, password);
+        if(loginResult != UserLoginResult.Success){
+            throw new AdviceException(loginResult.getName());
+        }
+
         User user = userService.getUserByUsername(username);
         if(user == null){
             return null;
         }
 
-        return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
+        usernamePasswordToken.setPassword(user.getPassword().toCharArray());
+        return new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), getName());
     }
 }

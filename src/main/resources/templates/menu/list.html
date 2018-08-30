@@ -1,0 +1,246 @@
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/_contentLayout}">
+<head>
+    <title>菜单管理</title>
+    <link rel="stylesheet" th:href="@{/vendor/plugins/datatables.net-bs/css/dataTables.bootstrap.min.css}">
+</head>
+<body>
+<th:block layout:fragment="bodySection">
+    <section class="content-header">
+        <h1>菜单管理</h1>
+        <ol class="breadcrumb">
+            <li><a th:href="@{/}"><i class="fa fa-home"></i> 首页</a></li>
+            <li class="active">菜单管理</li>
+        </ol>
+    </section>
+    <section class="content">
+        <div class="box">
+            <div class="box-header with-border">
+                <form id="searchForm" class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-xs-1 control-label">名称:</label>
+                        <div class="col-xs-2">
+                            <input type="text" name="name" class="form-control" />
+                        </div>
+                        <label class="col-xs-1 control-label">系统名称:</label>
+                        <div class="col-xs-2">
+                            <input type="text" name="systemName" class="form-control" />
+                        </div>
+                        <div class="col-xs-2">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="enabledOnly"> 仅查询启用
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <button type="button" id="btnSearch" class="btn btn-info">查询</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="box-body">
+                <div>
+                    <button type="button" id="btnAdd" class="btn btn-primary">新增</button>
+                </div>
+                <table id="dataTable" class="table table-striped table-bordered table-striped">
+                    <colgroup>
+                        <col style="width: 5%;">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>名称</th>
+                        <th>系统名称</th>
+                        <th>层级</th>
+                        <th>Url</th>
+                        <th>描述</th>
+                        <th>修改人</th>
+                        <th>修改时间</th>
+                        <th>已启用</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </section>
+</th:block>
+
+<th:block layout:fragment="footSection">
+    <script th:src="@{/vendor/plugins/datatables.net/js/jquery.dataTables.min.js}"></script>
+    <script th:src="@{/vendor/plugins/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
+    <script th:src="@{/js/jquery.dataTables.default.js}"></script>
+
+    <script th:src="@{/vendor/plugins/jquery-validation/jquery.validate.js}"></script>
+    <script th:src="@{/vendor/plugins/jquery-validation/localization/messages_zh.js}"></script>
+    <script th:src="@{/js/jquery.validate.default.js}"></script>
+
+    <script id="rowOperateTemplate" type="text/template">
+        <button type="button" data-id="{{=it.id}}" class="btn btn-warning btn-sm btn-edit-item_selector">修改</button>
+        <button type="button" data-id="{{=it.id}}" class="btn btn-danger btn-sm btn-delete-item_selector">删除</button>
+    </script>
+    <script type="text/javascript">
+        $(function() {
+            var dataTable;
+            var searchParams;
+            var addDialog;
+            var editDialog;
+            var viewLogDialog;
+            var rowOperateRender = doT.template($('#rowOperateTemplate').html());
+
+
+            function initDataTable() {
+                var grid = $('#dataTable').DataTable({
+                    columns: [
+                        {
+                            data: null,
+                            render: function(data, type, row, meta){
+                                return meta.row + 1;
+                            }
+                        },
+                        {data: 'name'},
+                        {data: 'systemName'},
+                        {data: 'level'},
+                        {data: 'url'},
+                        {data: 'description'},
+                        {data: 'modifier'},
+                        {data: 'modifyTime'},
+                        {
+                            data: 'enabled',
+                            render: function (data) {
+                                return BusinessUtil.convertToEnabledText(data);
+                            }
+                        },
+                        {
+                            data: null,
+                            render: function (row) {
+                                return rowOperateRender(row);
+                            }
+                        }
+                    ],
+                    ajax: {
+                        url: App.mapPath('menu/search'),
+                        data: function (d) {
+                            return $.extend({}, d, searchParams);
+                        }
+                    }
+                });
+
+                return grid;
+            }
+
+            function initDialogs() {
+                addDialog = commonDialog({
+                    size: 'md',
+                    title: '新增菜单',
+                    ajax: {
+                        url: App.mapPath('menu/add')
+                    },
+                    footer: {
+                        buttons: {
+                            close: {
+                                text: '取消'
+                            },
+                            ok: {
+                                text: '保存',
+                                click: function () {
+                                    add();
+                                }
+                            }
+                        }
+                    }
+                });
+                editDialog = commonDialog({
+                    size: 'lg',
+                    footer: {
+                        buttons: {
+                            close: {
+                                text: '取消'
+                            },
+                            ok: {
+                                text: '保存',
+                                click: function () {
+                                    editEquipmentAsset();
+                                }
+                            }
+                        }
+                    }
+                });
+                viewLogDialog = commonDialog({
+                    size: 'md'
+                });
+            }
+
+            function bindEvents() {
+                $('#btnSearch').click(function () {
+                    search();
+                });
+                $('#btnAdd').click(function () {
+                    addDialog.show();
+                });
+                $('#dataTable').on('click', '.btn-edit-item_selector', function () {
+                    var itemData = $(this).data();
+                    editDialog.show({
+                        title: StringUtil.format('修改设备({0})', itemData.serialNumber),
+                        ajax: {
+                            url: mapPath('equipment-asset/edit/' + itemData.id)
+                        }
+                    });
+                });
+                $('#dataTable').on('click', '.btn-delete-item_selector', function () {
+                    var itemData = $(this).data();
+                    Html.confirm(StringUtil.format('确认删除设备({0})吗？', itemData.serialNumber), function () {
+                        deleteEquipmentAsset(itemData.id);
+                    });
+                });
+            }
+
+            function search(){
+                searchParams = $('#searchForm').serializeJson();
+
+                dataTable.ajax.reload();
+            }
+
+            function add() {
+                submitAddData().done(function (result) {
+                    if (result.success) {
+                        addDialog.hide();
+                        Html.notific('保存成功');
+                        dataTable.ajax.reload();
+                    }
+                });
+            }
+
+            function edit() {
+                submitEditData().done(function (result) {
+                    if (result.success) {
+                        editDialog.hide();
+                        Html.notific('保存成功');
+                        dataTable.ajax.reload();
+                    }
+                })
+            }
+
+            function deleteById(id) {
+                $.ajax({
+                    type: 'POST',
+                    url: mapPath('equipment-asset/delete/' + id)
+                }).done(function (result) {
+                    if (result.success) {
+                        Html.notific('删除成功');
+                        dataTable.ajax.reload();
+                    }
+                });
+            }
+
+
+            dataTable = initDataTable();
+            initDialogs();
+            bindEvents();
+        });
+    </script>
+</th:block>
+</body>
+</html>

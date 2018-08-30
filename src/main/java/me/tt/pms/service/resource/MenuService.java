@@ -1,7 +1,10 @@
 package me.tt.pms.service.resource;
 
+import com.github.pagehelper.PageInfo;
 import me.tt.pms.core.domain.Menu;
 import me.tt.pms.core.domain.dto.MenuDto;
+import me.tt.pms.core.domain.dto.MenuSearchDto;
+import me.tt.pms.core.paging.PageSearchParameter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -53,4 +56,11 @@ public interface MenuService {
      */
     List<MenuDto> getMenusTreeBySystemNameAndUserId(@NotEmpty(message = "系统名称不能为空") String systemName,
                                                     @NotNull(message = "用户id不能为空") Long userId);
+
+    /**
+     * 分页查询
+     * @param searchParameter 查询参数
+     * @return 分页查询结果
+     */
+    PageInfo<Menu> searchPage(PageSearchParameter<MenuSearchDto> searchParameter);
 }

@@ -62,7 +62,7 @@ $.extend( DataTable.ext.classes, {
 } );
 
 
-/* Bootstrap paging button renderer */
+/* Bootstrap datatable button renderer */
 DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, buttons, page, pages ) {
 	var api     = new DataTable.Api( settings );
 	var classes = settings.oClasses;
@@ -159,7 +159,7 @@ DataTable.ext.renderer.pageButton.bootstrap = function ( settings, host, idx, bu
 	var activeEl;
 
 	try {
-		// Because this approach is destroying and recreating the paging
+		// Because this approach is destroying and recreating the datatable
 		// elements, focus is lost on the select button which is bad for
 		// accessibility. So we want to restore focus once the draw has
 		// completed

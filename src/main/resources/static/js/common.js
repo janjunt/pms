@@ -299,6 +299,42 @@
     };
 });
 
++(function (factory) {
+    'use strict';
+
+
+    factory(window, jQuery);
+})(function (global, $) {
+    'use strict';
+
+
+    function _handleICheck() {
+        if(!$.fn.iCheck){
+            return;
+        }
+
+        $('.icheck').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+            radioClass: 'iradio_square-blue'
+        });
+    }
+
+
+    global.App = {
+        init: function () {
+            _handleICheck();
+        },
+        mapPath: function (url) {
+            return url;
+        }
+    };
+
+
+    $(function () {
+        App.init();
+    });
+});
+
 // jQuery 通用扩展
 (function( factory ) {
     'use strict';
@@ -797,7 +833,7 @@
         },
         blockUI: function (options) {
             options = $.extend(true, {
-                message: '<img src="/vendor/img/loading/loading-spinner-grey.gif" />&nbsp;&nbsp;正在请求中，请稍候...',
+                message: '<img src="' + App.mapPath('/img/loading/loading-spinner-grey.gif') + '" />&nbsp;&nbsp;正在请求中，请稍候...',
                 css: {
                     border: '0',
                     padding: '5px 10px',

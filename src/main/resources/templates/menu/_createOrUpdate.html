@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>菜单新增或修改</title>
+</head>
+<body>
+<th:block th:fragment="content">
+    <div class="form-group">
+        <label class="col-xs-3 control-label label-required">名称:</label>
+        <div class="col-xs-9">
+            <input type="text" name="name" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label label-required">父菜单:</label>
+        <div class="col-xs-9">
+            <select name="parentId" class="form-control parent-id_selector">
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label label-required">系统名称:</label>
+        <div class="col-xs-9">
+            <input type="text" name="systemName" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label label-required">Url:</label>
+        <div class="col-xs-9">
+            <input type="text" name="url" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label label-required">图标:</label>
+        <div class="col-xs-9">
+            <input type="text" name="className" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label label-required">显示顺序:</label>
+        <div class="col-xs-9">
+            <input type="text" name="displayOrder" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-3 control-label">描述:</label>
+        <div class="col-xs-9">
+            <input type="text" name="description" class="form-control">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-xs-offset-3 col-xs-9">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="enabled"> 启用
+                </label>
+            </div>
+        </div>
+    </div>
+</th:block>
+<th:block th:fragment="script (formSelector)">
+    <script type="text/javascript" th:inline="javascript">
+        (function (factory) {
+            factory(window, jQuery);
+        })(function (global, $) {
+            'use strict';
+
+
+            // var allEquipments = ArrayUtil.ensureArray(/*[[${equipments}]]*/ null);
+            // var model = /*[[${model}]]*/ null;
+            // var $form = $(/*[[${formSelector}]]*/ '');
+            //
+            //
+            // function _$(selector) {
+            //     return $form.find(selector);
+            // }
+            //
+            // function initControls() {
+            //     _$('.date_selector').datepicker({
+            //         endDate: '+0d'
+            //     });
+            //     _$('.photo-file_selector').fileupload({
+            //         autoUpload: false,
+            //         dataType: 'json',
+            //         add: function (e, data) {
+            //             $form.data('api').photoFileUpload = data;
+            //         },
+            //         change: function (e, data) {
+            //             if(data.files.length > 0){
+            //                 Html.generatePreviewSrc(data.files[0])
+            //                     .done(function (src) {
+            //                         _$('.photo-preview_selector').attr('src', src);
+            //                     });
+            //             }
+            //         }
+            //     });
+            //     $form.data('api', {
+            //         validData: validData,
+            //         photoFileUpload: null,
+            //         photoFileUploadOption: function (options) {
+            //             _$('.photo-file_selector').fileupload('option', options);
+            //         }
+            //     });
+            //
+            //     initTypeSelect();
+            //     _$('.responsible-person-id_selector').select2({
+            //         dropdownParent: $form
+            //     });
+            //     return $.when(BusinessUtil.loadCodeDictionary(mapPath('code-dictionary/equipment-asset/statuses'), _$('.status-id_selector')),
+            //         BusinessUtil.loadCodeDictionary(mapPath('code-dictionary/equipment-asset/hold-modes'), _$('.hold-mode-id_selector')));
+            // }
+            //
+            // function initTypeSelect() {
+            //     var equipmentsByType = _.uniqBy(allEquipments, 'typeId');
+            //
+            //     _$('.type-id_selector').html(Html.buildOptionsHtml(equipmentsByType, 'typeId', 'typeName', true));
+            // }
+            //
+            // function initValidates() {
+            //     $('#equipmentAssetAddForm').validate({
+            //         rules: {
+            //             departmentId: 'required',
+            //             typeId: 'required',
+            //             subjectNameId: 'required',
+            //             brand: 'required',
+            //             modelNo: 'required',
+            //             holdModeId: 'required',
+            //             statusId: 'required',
+            //             sellPrice: {
+            //                 number: true,
+            //                 min: 0
+            //             },
+            //             buyDate: 'required',
+            //             buyPrice: {
+            //                 required: true,
+            //                 number: true,
+            //                 min: 0
+            //             }
+            //         }
+            //     });
+            // }
+            //
+            // function bindEvents() {
+            //     _$('.type-id_selector').change(function () {
+            //         onTypeChange(parseInt($(this).val(), 10));
+            //     });
+            //     _$('.subject-name-id_selector').change(function () {
+            //         onSubjectNameChange(parseInt($(this).val(), 10), parseInt(_$('.type-id_selector').val(), 10));
+            //     });
+            //     _$('.brand_selector').change(function () {
+            //         onBrandChange($(this).val(), parseInt(_$('.subject-name-id_selector').val(), 10), parseInt(_$('.type-id_selector').val(), 10));
+            //     });
+            //     _$('.status-id_selector').change(function () {
+            //         onStatusChange(parseInt($(this).val(), 10));
+            //     });
+            // }
+            //
+            // function bindData(data) {
+            //     if(TypeUtil.isNull(data)){
+            //         return;
+            //     }
+            //
+            //     _.forEach(data, function (value, name) {
+            //         var $control = _$(StringUtil.format('[name={0}]', name));
+            //         if($control.is('input:text')){
+            //             switch(name){
+            //                 case 'buyDate':
+            //                 case 'scrapDate':
+            //                     value = DateTimeUtil.parse(value);
+            //                     $control.datepicker('update', value);
+            //                     break;
+            //                 default:
+            //                     $control.val(value);
+            //                     break;
+            //             }
+            //         }else if(name === 'equipmentId'){
+            //             var equipment = _.find(allEquipments, {id: value});
+            //             $('select[name=typeId]').val(equipment.typeId);
+            //             onTypeChange(equipment.typeId, true);
+            //             $('select[name=subjectNameId]').val(equipment.subjectNameId);
+            //             onSubjectNameChange(equipment.subjectNameId, equipment.typeId, true);
+            //             $('select[name=brand]').val(equipment.brand);
+            //             onBrandChange(equipment.brand, equipment.subjectNameId, equipment.typeId);
+            //             $control.val(value);
+            //         }else if(name === 'responsiblePersonId'){
+            //             $control.val(value);
+            //             $control.trigger('change');
+            //         }else{
+            //             $control.val(value);
+            //         }
+            //     });
+            // }
+            //
+            // function onTypeChange(typeId, preventChangeEvent) {
+            //     var equipments = _.filter(allEquipments, {typeId: typeId});
+            //     var equipmentsBySubjectName = _.uniqBy(equipments, 'subjectNameId');
+            //
+            //     _$('.subject-name-id_selector').html(Html.buildOptionsHtml(equipmentsBySubjectName, 'subjectNameId', 'subjectName', true));
+            //     if(!preventChangeEvent){
+            //         _$('.subject-name-id_selector').trigger("change");
+            //     }
+            // }
+            //
+            // function onSubjectNameChange(subjectNameId, typeId, preventChangeEvent) {
+            //     var equipments = _.filter(allEquipments, {typeId: typeId, subjectNameId: subjectNameId});
+            //     var equipmentsByBrand = _.uniqBy(equipments, 'brand');
+            //
+            //     _$('.brand_selector').html(Html.buildOptionsHtml(equipmentsByBrand, 'brand', 'brand', true));
+            //     if(!preventChangeEvent) {
+            //         _$('.brand_selector').trigger("change");
+            //     }
+            // }
+            //
+            // function onBrandChange(brand, subjectNameId, typeId) {
+            //     var equipments = _.filter(allEquipments, {typeId: typeId, subjectNameId: subjectNameId, brand: brand});
+            //
+            //     _$('.model-no_selector').html(Html.buildOptionsHtml(equipments, 'id', 'modelNo', true));
+            // }
+            //
+            // function onStatusChange(statusId) {
+            //     _$('input.scrap-date_selector').prop('disabled', statusId !== EnumUtil.EquipmentAssetStatus.Scrapped && statusId !== EnumUtil.EquipmentAssetStatus.Sold);
+            //     _$('input.sell-price_selector').prop('disabled', statusId !== EnumUtil.EquipmentAssetStatus.Sold);
+            //     _$('label.scrap-date_selector').toggleClass('label-required', statusId === EnumUtil.EquipmentAssetStatus.Scrapped || statusId === EnumUtil.EquipmentAssetStatus.Sold);
+            //     _$('label.sell-price_selector').toggleClass('label-required', statusId === EnumUtil.EquipmentAssetStatus.Sold);
+            // }
+            //
+            // function validData() {
+            //     if(!$form.valid()) {
+            //         return false;
+            //     }
+            //     var formData = $form.serializeJson();
+            //     var statusId = parseInt(formData.statusId, 10);
+            //     if(TypeUtil.isNullOrEmpty(formData.scrapDate)
+            //         && (statusId === EnumUtil.EquipmentAssetStatus.Scrapped
+            //             || statusId === EnumUtil.EquipmentAssetStatus.Sold)){
+            //         Html.alert('状态为"' + EnumUtil.convertToEquipmentAssetStatusText(statusId) + '"时，报废日期是必填的');
+            //         return false;
+            //     }
+            //     if(TypeUtil.isNullOrEmpty(formData.sellPrice)
+            //         && statusId === EnumUtil.EquipmentAssetStatus.Sold){
+            //         Html.alert('状态为"' + EnumUtil.convertToEquipmentAssetStatusText(statusId) + '"时，变卖价格是必填的');
+            //         return false;
+            //     }
+            //
+            //
+            //     return true;
+            // }
+            //
+            //
+            // initValidates();
+            // bindEvents();
+            // initControls().done(function () {
+            //     if(TypeUtil.isNull(model)){
+            //         _$('.type-id_selector').trigger("change");
+            //     }else{
+            //         bindData(model);
+            //     }
+            // });
+        });
+    </script>
+</th:block>
+</body>
+</html>

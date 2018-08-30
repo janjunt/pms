@@ -1,10 +1,14 @@
 package me.tt.pms.service.resource.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import me.tt.pms.core.AdviceException;
 import me.tt.pms.core.domain.Menu;
 import me.tt.pms.core.domain.constants.ApplicationNames;
 import me.tt.pms.core.domain.dto.MenuDto;
+import me.tt.pms.core.domain.dto.MenuSearchDto;
+import me.tt.pms.core.paging.PageSearchParameter;
 import me.tt.pms.core.utils.JsonUtils;
 import me.tt.pms.core.utils.ListUtils;
 import me.tt.pms.core.utils.StringUtils;
@@ -115,6 +119,20 @@ public class MenuServiceImpl implements MenuService {
 
 
     /**
+     * 分页查询
+     * @param searchParameter 查询参数
+     * @return 分页查询结果
+     */
+    @Override
+    public PageInfo<Menu> searchPage(PageSearchParameter<MenuSearchDto> searchParameter){
+        List<Menu> equipment = searchPageInternal(searchParameter);
+
+        return new PageInfo<>(equipment);
+    }
+
+
+
+    /**
      * 生成菜单路径
      * @param menu 菜单
      * @return 菜单路径
@@ -180,6 +198,42 @@ public class MenuServiceImpl implements MenuService {
         }
 
         return dto;
+    }
+
+    /**
+     * 分页查询
+     * @param searchParameter 查询参数
+     * @return 分页查询结果
+     */
+    private List<Menu> searchPageInternal(PageSearchParameter<MenuSearchDto> searchParameter){
+        PageHelper.startPage(searchParameter.getPageNum(),searchParameter.getPageSize());
+
+        return searchInternal(searchParameter.getSearchParameter());
+    }
+
+    /**
+     * 查询所有
+     * @param searchDto 查询dto
+     * @return 查询结果
+     */
+    private List<Menu> searchInternal(MenuSearchDto searchDto){
+        WeekendSqls<Menu> sqls = WeekendSqls.<Menu>custom()
+                .andEqualTo(Menu::getDeleted, false);
+        if(searchDto != null){
+            if(!StringUtils.isNullOrEmpty(searchDto.getName())){
+                sqls = sqls.andLike(Menu::getName, String.format("%%%s%%", searchDto.getName()));
+            }
+            if(!StringUtils.isNullOrEmpty(searchDto.getSystemName())){
+                sqls = sqls.andLike(Menu::getSystemName, String.format("%%%s%%", searchDto.getSystemName()));
+            }
+            if(searchDto.getEnabledOnly() != null && searchDto.getEnabledOnly()){
+                sqls = sqls.andEqualTo(Menu::getEnabled, searchDto.getEnabledOnly());
+            }
+        }
+
+        Example example = Example.builder(Menu.class).where(sqls).orderByAsc("createTime").build();
+
+        return menuMapper.selectByExample(example);
     }
 
 }

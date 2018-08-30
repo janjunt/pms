@@ -45,20 +45,21 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult login(UserLoginDto loginDto) {
-        if(loginDto.getRememberMe() == null){
-            loginDto.setRememberMe(false);
-        }
+        loginDto.setRememberMe(false);
+        authenticationService.signIn(loginDto);
 
-        UserLoginResult loginResult = userService.validateUser(loginDto.getUsername(), loginDto.getPassword());
+        return AjaxResult.success();
+    }
 
-        if(loginResult == UserLoginResult.Success){
-            User user = userService.getUserByUsername(loginDto.getUsername());
-            authenticationService.signIn(user, loginDto.getRememberMe());
+    /**
+     * 登出
+     * @return 登录页面路径
+     */
+    @RequestMapping(value = "/logout")
+    public String logout(){
+        authenticationService.signOut();
 
-            return AjaxResult.success();
-        }else {
-            return AjaxResult.error(loginResult.getName());
-        }
+        return "user/login";
     }
 
     /**

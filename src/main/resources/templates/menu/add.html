@@ -21,7 +21,11 @@
                 type: 'POST',
                 url: App.mapPath('menu/add'),
                 data: $('#menuAddForm').serialize()
+            }).done(function (result) {
+                d.resolve(result);
             });
+
+            return promise;
         };
     });
 </script>

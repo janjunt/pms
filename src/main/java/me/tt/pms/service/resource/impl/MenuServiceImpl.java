@@ -8,6 +8,7 @@ import me.tt.pms.core.domain.Menu;
 import me.tt.pms.core.domain.constants.ApplicationNames;
 import me.tt.pms.core.domain.dto.MenuAddDto;
 import me.tt.pms.core.domain.dto.MenuDto;
+import me.tt.pms.core.domain.dto.MenuEditDto;
 import me.tt.pms.core.domain.dto.MenuSearchDto;
 import me.tt.pms.core.paging.PageSearchParameter;
 import me.tt.pms.core.utils.JsonUtils;
@@ -42,12 +43,21 @@ public class MenuServiceImpl implements MenuService {
     private MenuMapper menuMapper;
 
     /**
+     * 根据菜单标识符，获取菜单
+     * @param id 菜单标识符
+     * @return 菜单
+     */
+    public Menu getById(Long id){
+        return menuMapper.selectByPrimaryKey(id);
+    }
+
+    /**
      * 获取指定系统名称的菜单
      * @param systemName 菜单系统名称
      * @return 菜单
      */
     @Override
-    public Menu getMenuBySystemName(final String systemName) {
+    public Menu getMenuBySystemName(String systemName) {
         WeekendSqls<Menu> sqls = WeekendSqls.<Menu>custom()
                 .andEqualTo(Menu::getDeleted, false)
                 .andEqualTo(Menu::getSystemName, systemName);
@@ -156,9 +166,78 @@ public class MenuServiceImpl implements MenuService {
      */
     @Override
     public void add(MenuAddDto addDto){
-        menuMapper.insertSelective(conventToEntity(addDto));
+        Menu menu = conventToEntity(addDto);
+
+        menu.setCreator(addDto.getOperator());
+        menu.setModifier(addDto.getOperator());
+        menu.setDeleted(false);
+        Date now = menuMapper.selectCurrentDateTime();
+        menu.setCreateTime(now);
+        menu.setModifyTime(now);
+
+        if(menuMapper.insert(menu) != 1){
+            throw new AdviceException("菜单新增失败");
+        }
     }
 
+
+    /**
+     * 修改菜单启用状态
+     * @param id 菜单标识符
+     * @param enabled 启用状态
+     * @param operator 操作人
+     */
+    @Override
+    public void modifyEnabled(Long id, Boolean enabled, String operator){
+        Menu menu = new Menu();
+        menu.setId(id);
+        menu.setEnabled(enabled);
+        menu.setModifier(operator);
+        menu.setModifyTime(menuMapper.selectCurrentDateTime());
+
+        if(menuMapper.updateByPrimaryKeySelective(menu) != 1){
+            throw new AdviceException("菜单%s失败", menu.getEnabled()? "启用": "禁用");
+        }
+    }
+
+    /**
+     * 修改菜单
+     * @param editDto 菜单修改dto
+     */
+    @Override
+    public void modify(MenuEditDto editDto){
+        if(editDto.getParentId() != null && editDto.getParentId().equals(editDto.getId())){
+            throw new AdviceException("菜单的父菜单不能是自己本身");
+        }
+
+        Menu menu = conventToEntity(editDto);
+        menu.setId(editDto.getId());
+        menu.setModifier(editDto.getOperator());
+        menu.setModifyTime(menuMapper.selectCurrentDateTime());
+
+        if(menuMapper.updateByPrimaryKeySelective(menu) != 1){
+            throw new AdviceException("菜单修改失败");
+        }
+    }
+
+
+    /**
+     * 删除菜单
+     * @param id 菜单标识符
+     * @param operator 操作人
+     */
+    @Override
+    public void delete(Long id, String operator){
+        Menu menu = new Menu();
+        menu.setId(id);
+        menu.setDeleted(true);
+        menu.setModifier(operator);
+        menu.setModifyTime(menuMapper.selectCurrentDateTime());
+
+        if(menuMapper.updateByPrimaryKeySelective(menu) != 1){
+            throw new AdviceException("菜单删除失败");
+        }
+    }
 
 
     /**
@@ -290,16 +369,9 @@ public class MenuServiceImpl implements MenuService {
             menu.setLevel(0);
             menu.setParentPath(null);
         }
-
-        menu.setCreator(addDto.getOperator());
-        menu.setModifier(addDto.getOperator());
         if(menu.getEnabled() == null){
             menu.setEnabled(false);
         }
-        menu.setDeleted(false);
-        Date now = menuMapper.selectCurrentDateTime();
-        menu.setCreateTime(now);
-        menu.setModifyTime(now);
 
         return menu;
     }

@@ -1,0 +1,35 @@
+<form id="menuEditForm" class="form-horizontal">
+    <input type="hidden" name="id" data-th-value="${model.id}"/>
+    <th-block data-th-insert="menu/_createOrUpdate :: content">
+    </th-block>
+</form>
+<script type="text/javascript" data-th-replace="menu/_createOrUpdate :: script('#menuEditForm')"></script>
+<script type="text/javascript">
+    (function (factory) {
+        factory(window, jQuery);
+    })(function (global, $) {
+        'use strict';
+
+
+        global.submitEditData = function () {
+            var d = $.Deferred();
+            var promise = d.promise();
+
+            var formApi = $('#menuEditForm').data('api');
+            if(!formApi.validData()) {
+                return promise;
+            }
+
+
+            $.ajax({
+                type: 'POST',
+                url: App.mapPath('menu/edit'),
+                data: $('#menuEditForm').serialize()
+            }).done(function (result) {
+                d.resolve(result);
+            });
+
+            return promise;
+        };
+    });
+</script>

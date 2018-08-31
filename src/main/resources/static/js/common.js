@@ -897,6 +897,23 @@
             }
 
             return value.replace(/\r\n/g, '<br/>').replace(/\r/g, '<br/>').replace(/\n/g, '<br/>');
+        },
+        bindData: function ($form, data, customHandle) {
+            _.forEach(data, function (value, name) {
+                var $control = $form.find(StringUtil.format('[name={0}]', name));
+                var processed = false;
+                if(TypeUtil.isFunction(customHandle)){
+                    processed = customHandle(name, value, $control);
+                }
+                if(!processed){
+                    if($control.is(':checkbox')){
+                        $control.prop('checked', value);
+                    } else {
+                        $control.val(value);
+                    }
+                }
+            });
+
         }
     };
 });

@@ -52,7 +52,7 @@
         <div class="col-xs-offset-3 col-xs-9">
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" name="enabled"> 启用
+                    <input type="checkbox" name="enabled" checked="checked"> 启用
                 </label>
             </div>
         </div>
@@ -102,74 +102,14 @@
                 });
             }
 
-            // function bindData(data) {
-            //     if(TypeUtil.isNull(data)){
-            //         return;
-            //     }
-            //
-            //     _.forEach(data, function (value, name) {
-            //         var $control = _$(StringUtil.format('[name={0}]', name));
-            //         if($control.is('input:text')){
-            //             switch(name){
-            //                 case 'buyDate':
-            //                 case 'scrapDate':
-            //                     value = DateTimeUtil.parse(value);
-            //                     $control.datepicker('update', value);
-            //                     break;
-            //                 default:
-            //                     $control.val(value);
-            //                     break;
-            //             }
-            //         }else if(name === 'equipmentId'){
-            //             var equipment = _.find(allEquipments, {id: value});
-            //             $('select[name=typeId]').val(equipment.typeId);
-            //             onTypeChange(equipment.typeId, true);
-            //             $('select[name=subjectNameId]').val(equipment.subjectNameId);
-            //             onSubjectNameChange(equipment.subjectNameId, equipment.typeId, true);
-            //             $('select[name=brand]').val(equipment.brand);
-            //             onBrandChange(equipment.brand, equipment.subjectNameId, equipment.typeId);
-            //             $control.val(value);
-            //         }else if(name === 'responsiblePersonId'){
-            //             $control.val(value);
-            //             $control.trigger('change');
-            //         }else{
-            //             $control.val(value);
-            //         }
-            //     });
-            // }
-            //
-            // function onTypeChange(typeId, preventChangeEvent) {
-            //     var equipments = _.filter(allEquipments, {typeId: typeId});
-            //     var equipmentsBySubjectName = _.uniqBy(equipments, 'subjectNameId');
-            //
-            //     _$('.subject-name-id_selector').html(Html.buildOptionsHtml(equipmentsBySubjectName, 'subjectNameId', 'subjectName', true));
-            //     if(!preventChangeEvent){
-            //         _$('.subject-name-id_selector').trigger("change");
-            //     }
-            // }
-            //
-            // function onSubjectNameChange(subjectNameId, typeId, preventChangeEvent) {
-            //     var equipments = _.filter(allEquipments, {typeId: typeId, subjectNameId: subjectNameId});
-            //     var equipmentsByBrand = _.uniqBy(equipments, 'brand');
-            //
-            //     _$('.brand_selector').html(Html.buildOptionsHtml(equipmentsByBrand, 'brand', 'brand', true));
-            //     if(!preventChangeEvent) {
-            //         _$('.brand_selector').trigger("change");
-            //     }
-            // }
-            //
-            // function onBrandChange(brand, subjectNameId, typeId) {
-            //     var equipments = _.filter(allEquipments, {typeId: typeId, subjectNameId: subjectNameId, brand: brand});
-            //
-            //     _$('.model-no_selector').html(Html.buildOptionsHtml(equipments, 'id', 'modelNo', true));
-            // }
-            //
-            // function onStatusChange(statusId) {
-            //     _$('input.scrap-date_selector').prop('disabled', statusId !== EnumUtil.EquipmentAssetStatus.Scrapped && statusId !== EnumUtil.EquipmentAssetStatus.Sold);
-            //     _$('input.sell-price_selector').prop('disabled', statusId !== EnumUtil.EquipmentAssetStatus.Sold);
-            //     _$('label.scrap-date_selector').toggleClass('label-required', statusId === EnumUtil.EquipmentAssetStatus.Scrapped || statusId === EnumUtil.EquipmentAssetStatus.Sold);
-            //     _$('label.sell-price_selector').toggleClass('label-required', statusId === EnumUtil.EquipmentAssetStatus.Sold);
-            // }
+            function bindData(data) {
+                if(TypeUtil.isNull(data)){
+                    return;
+                }
+
+                Html.bindData($form, data);
+                _$('.parent-id_selector').find('option[value=' + data.id + ']').prop('disabled', true);
+            }
 
             function validData() {
                 return $form.valid();
@@ -178,6 +118,7 @@
 
             initValidates();
             initControls();
+            bindData(model);
         });
     </script>
 </th:block>

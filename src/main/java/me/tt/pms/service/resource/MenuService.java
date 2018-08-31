@@ -4,10 +4,12 @@ import com.github.pagehelper.PageInfo;
 import me.tt.pms.core.domain.Menu;
 import me.tt.pms.core.domain.dto.MenuAddDto;
 import me.tt.pms.core.domain.dto.MenuDto;
+import me.tt.pms.core.domain.dto.MenuEditDto;
 import me.tt.pms.core.domain.dto.MenuSearchDto;
 import me.tt.pms.core.paging.PageSearchParameter;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -21,11 +23,18 @@ import java.util.List;
 public interface MenuService {
 
     /**
+     * 根据菜单标识符，获取菜单
+     * @param id 菜单标识符
+     * @return 菜单
+     */
+    Menu getById(@NotNull(message = "'菜单id'不能为空") Long id);
+
+    /**
      * 获取指定系统名称的菜单
      * @param systemName 菜单系统名称
      * @return 菜单
      */
-    Menu getMenuBySystemName(String systemName);
+    Menu getMenuBySystemName(@NotBlank(message = "'系统名称不能为空'") String systemName);
 
 
     /**
@@ -34,14 +43,14 @@ public interface MenuService {
      * @param showHidden 显示隐藏的菜单
      * @return 菜单列表
      */
-    List<Menu> getChildMenusBySystemName(String systemName, boolean showHidden);
+    List<Menu> getChildMenusBySystemName(@NotBlank(message = "'系统名称不能为空'") String systemName, boolean showHidden);
 
     /**
      * 根据系统名称，获取所有子菜单
      * @param systemName 菜单系统名称
      * @return 菜单列表
      */
-    List<Menu> getChildMenusBySystemName(String systemName);
+    List<Menu> getChildMenusBySystemName(@NotBlank(message = "'系统名称不能为空'") String systemName);
 
     /**
      * 根据用户id,获取菜单树
@@ -76,4 +85,28 @@ public interface MenuService {
      * @param addDto 菜单新增dto
      */
     void add(@Valid MenuAddDto addDto);
+
+    /**
+     * 修改菜单启用状态
+     * @param id 菜单标识符
+     * @param enabled 启用状态
+     * @param operator 操作人
+     */
+    void modifyEnabled(@NotNull(message = "'菜单id'不能为空") Long id,
+                       @NotNull(message = "'启用状态'不能为空") Boolean enabled,
+                       @NotBlank(message = "'操作人'不能为空") String operator);
+
+    /**
+     * 删除菜单
+     * @param id 菜单标识符
+     * @param operator 操作人
+     */
+    void delete(@NotNull(message = "参数'id'不能为空") Long id,
+                @NotBlank(message = "'操作人'不能为空") String operator);
+
+    /**
+     * 修改菜单
+     * @param editDto 菜单修改dto
+     */
+    void modify(MenuEditDto editDto);
 }

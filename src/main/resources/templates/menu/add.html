@@ -8,36 +8,20 @@
         'use strict';
 
 
-        // global.submitAddData = function () {
-        //     var d = $.Deferred();
-        //     var promise = d.promise();
-        //
-        //     var formApi = $('#equipmentAssetAddForm').data('api');
-        //     if(!formApi.validData()) {
-        //         return promise;
-        //     }
-        //
-        //
-        //     var addData = $('#equipmentAssetAddForm').serializeJson();
-        //     if(TypeUtil.isNull(formApi.photoFileUpload)){
-        //         $.ajax({
-        //             type: 'POST',
-        //             url: mapPath('equipment-asset/add'),
-        //             data: addData
-        //         }).done(function (result) {
-        //             d.resolve(result);
-        //         });
-        //     }else{
-        //         formApi.photoFileUploadOption({
-        //             url: mapPath('equipment-asset/add'),
-        //             done: function (e, response) {
-        //                 d.resolve(response.result);
-        //             }
-        //         });
-        //         formApi.photoFileUpload.submit();
-        //     }
-        //
-        //     return promise;
-        // };
+        global.submitAddData = function () {
+            var d = $.Deferred();
+            var promise = d.promise();
+
+            var formApi = $('#menuAddForm').data('api');
+            if(!formApi.validData()) {
+                return promise;
+            }
+
+            return $.ajax({
+                type: 'POST',
+                url: App.mapPath('menu/add'),
+                data: $('#menuAddForm').serialize()
+            });
+        };
     });
 </script>

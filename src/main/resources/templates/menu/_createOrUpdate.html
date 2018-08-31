@@ -12,26 +12,26 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-xs-3 control-label label-required">父菜单:</label>
+        <label class="col-xs-3 control-label">父菜单:</label>
         <div class="col-xs-9">
             <select name="parentId" class="form-control parent-id_selector">
             </select>
         </div>
     </div>
     <div class="form-group">
-        <label class="col-xs-3 control-label label-required">系统名称:</label>
+        <label class="col-xs-3 control-label">系统名称:</label>
         <div class="col-xs-9">
             <input type="text" name="systemName" class="form-control">
         </div>
     </div>
     <div class="form-group">
-        <label class="col-xs-3 control-label label-required">Url:</label>
+        <label class="col-xs-3 control-label">Url:</label>
         <div class="col-xs-9">
             <input type="text" name="url" class="form-control">
         </div>
     </div>
     <div class="form-group">
-        <label class="col-xs-3 control-label label-required">图标:</label>
+        <label class="col-xs-3 control-label">图标:</label>
         <div class="col-xs-9">
             <input type="text" name="className" class="form-control">
         </div>
@@ -66,95 +66,42 @@
             'use strict';
 
 
-            // var allEquipments = ArrayUtil.ensureArray(/*[[${equipments}]]*/ null);
-            // var model = /*[[${model}]]*/ null;
-            // var $form = $(/*[[${formSelector}]]*/ '');
-            //
-            //
-            // function _$(selector) {
-            //     return $form.find(selector);
-            // }
-            //
-            // function initControls() {
-            //     _$('.date_selector').datepicker({
-            //         endDate: '+0d'
-            //     });
-            //     _$('.photo-file_selector').fileupload({
-            //         autoUpload: false,
-            //         dataType: 'json',
-            //         add: function (e, data) {
-            //             $form.data('api').photoFileUpload = data;
-            //         },
-            //         change: function (e, data) {
-            //             if(data.files.length > 0){
-            //                 Html.generatePreviewSrc(data.files[0])
-            //                     .done(function (src) {
-            //                         _$('.photo-preview_selector').attr('src', src);
-            //                     });
-            //             }
-            //         }
-            //     });
-            //     $form.data('api', {
-            //         validData: validData,
-            //         photoFileUpload: null,
-            //         photoFileUploadOption: function (options) {
-            //             _$('.photo-file_selector').fileupload('option', options);
-            //         }
-            //     });
-            //
-            //     initTypeSelect();
-            //     _$('.responsible-person-id_selector').select2({
-            //         dropdownParent: $form
-            //     });
-            //     return $.when(BusinessUtil.loadCodeDictionary(mapPath('code-dictionary/equipment-asset/statuses'), _$('.status-id_selector')),
-            //         BusinessUtil.loadCodeDictionary(mapPath('code-dictionary/equipment-asset/hold-modes'), _$('.hold-mode-id_selector')));
-            // }
-            //
-            // function initTypeSelect() {
-            //     var equipmentsByType = _.uniqBy(allEquipments, 'typeId');
-            //
-            //     _$('.type-id_selector').html(Html.buildOptionsHtml(equipmentsByType, 'typeId', 'typeName', true));
-            // }
-            //
-            // function initValidates() {
-            //     $('#equipmentAssetAddForm').validate({
-            //         rules: {
-            //             departmentId: 'required',
-            //             typeId: 'required',
-            //             subjectNameId: 'required',
-            //             brand: 'required',
-            //             modelNo: 'required',
-            //             holdModeId: 'required',
-            //             statusId: 'required',
-            //             sellPrice: {
-            //                 number: true,
-            //                 min: 0
-            //             },
-            //             buyDate: 'required',
-            //             buyPrice: {
-            //                 required: true,
-            //                 number: true,
-            //                 min: 0
-            //             }
-            //         }
-            //     });
-            // }
-            //
-            // function bindEvents() {
-            //     _$('.type-id_selector').change(function () {
-            //         onTypeChange(parseInt($(this).val(), 10));
-            //     });
-            //     _$('.subject-name-id_selector').change(function () {
-            //         onSubjectNameChange(parseInt($(this).val(), 10), parseInt(_$('.type-id_selector').val(), 10));
-            //     });
-            //     _$('.brand_selector').change(function () {
-            //         onBrandChange($(this).val(), parseInt(_$('.subject-name-id_selector').val(), 10), parseInt(_$('.type-id_selector').val(), 10));
-            //     });
-            //     _$('.status-id_selector').change(function () {
-            //         onStatusChange(parseInt($(this).val(), 10));
-            //     });
-            // }
-            //
+            var allMenusTree = ArrayUtil.ensureArray(/*[[${menusTree}]]*/ null);
+            var model = /*[[${model}]]*/ null;
+            var $form = $(/*[[${formSelector}]]*/ '');
+
+
+            function _$(selector) {
+                return $form.find(selector);
+            }
+
+            function initControls() {
+                initMenusTree();
+                $form.data('api', {
+                    validData: validData
+                });
+            }
+
+            function initMenusTree() {
+                var menuArr = ArrayUtil.treeToList(allMenusTree);
+                _$('.parent-id_selector').html(Html.buildOptionsHtml(menuArr, 'id', function (menuItem) {
+                    return _.repeat('|--', menuItem.level) + menuItem.name;
+                }, true));
+            }
+
+            function initValidates() {
+                $form.validate({
+                    rules: {
+                        name: 'required',
+                        displayOrder: {
+                            required: true,
+                            number: true,
+                            min: 0
+                        }
+                    }
+                });
+            }
+
             // function bindData(data) {
             //     if(TypeUtil.isNull(data)){
             //         return;
@@ -223,39 +170,14 @@
             //     _$('label.scrap-date_selector').toggleClass('label-required', statusId === EnumUtil.EquipmentAssetStatus.Scrapped || statusId === EnumUtil.EquipmentAssetStatus.Sold);
             //     _$('label.sell-price_selector').toggleClass('label-required', statusId === EnumUtil.EquipmentAssetStatus.Sold);
             // }
-            //
-            // function validData() {
-            //     if(!$form.valid()) {
-            //         return false;
-            //     }
-            //     var formData = $form.serializeJson();
-            //     var statusId = parseInt(formData.statusId, 10);
-            //     if(TypeUtil.isNullOrEmpty(formData.scrapDate)
-            //         && (statusId === EnumUtil.EquipmentAssetStatus.Scrapped
-            //             || statusId === EnumUtil.EquipmentAssetStatus.Sold)){
-            //         Html.alert('状态为"' + EnumUtil.convertToEquipmentAssetStatusText(statusId) + '"时，报废日期是必填的');
-            //         return false;
-            //     }
-            //     if(TypeUtil.isNullOrEmpty(formData.sellPrice)
-            //         && statusId === EnumUtil.EquipmentAssetStatus.Sold){
-            //         Html.alert('状态为"' + EnumUtil.convertToEquipmentAssetStatusText(statusId) + '"时，变卖价格是必填的');
-            //         return false;
-            //     }
-            //
-            //
-            //     return true;
-            // }
-            //
-            //
-            // initValidates();
-            // bindEvents();
-            // initControls().done(function () {
-            //     if(TypeUtil.isNull(model)){
-            //         _$('.type-id_selector').trigger("change");
-            //     }else{
-            //         bindData(model);
-            //     }
-            // });
+
+            function validData() {
+                return $form.valid();
+            }
+
+
+            initValidates();
+            initControls();
         });
     </script>
 </th:block>

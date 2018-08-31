@@ -6,6 +6,7 @@ import com.github.pagehelper.PageInfo;
 import me.tt.pms.core.AdviceException;
 import me.tt.pms.core.domain.Menu;
 import me.tt.pms.core.domain.constants.ApplicationNames;
+import me.tt.pms.core.domain.dto.MenuAddDto;
 import me.tt.pms.core.domain.dto.MenuDto;
 import me.tt.pms.core.domain.dto.MenuSearchDto;
 import me.tt.pms.core.paging.PageSearchParameter;
@@ -21,6 +22,7 @@ import tk.mybatis.mapper.weekend.WeekendSqls;
 import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -117,6 +119,24 @@ public class MenuServiceImpl implements MenuService {
         return sortMenusForTree(menus);
     }
 
+    /**
+     * 获取所有菜单树
+     * @return 菜单树
+     */
+    @Override
+    public List<MenuDto> getAllMenusTree() {
+        WeekendSqls<Menu> sqls = WeekendSqls.<Menu>custom()
+                .andEqualTo(Menu::getDeleted, false)
+                .andEqualTo(Menu::getEnabled, true);
+        Example example = Example.builder(Menu.class)
+                .where(sqls)
+                .orderByAsc("displayOrder")
+                .build();
+
+        List<Menu> menus = menuMapper.selectByExample(example);
+
+        return sortMenusForTree(menus);
+    }
 
     /**
      * 分页查询
@@ -128,6 +148,15 @@ public class MenuServiceImpl implements MenuService {
         List<Menu> equipment = searchPageInternal(searchParameter);
 
         return new PageInfo<>(equipment);
+    }
+
+    /**
+     * 新增菜单
+     * @param addDto 菜单新增dto
+     */
+    @Override
+    public void add(MenuAddDto addDto){
+        menuMapper.insertSelective(conventToEntity(addDto));
     }
 
 
@@ -234,6 +263,45 @@ public class MenuServiceImpl implements MenuService {
         Example example = Example.builder(Menu.class).where(sqls).orderByAsc("createTime").build();
 
         return menuMapper.selectByExample(example);
+    }
+
+    /**
+     * dto转entity
+     * @param addDto dto
+     * @return entity
+     */
+    private Menu conventToEntity(MenuAddDto addDto){
+        Menu menu;
+        try {
+            menu = JsonUtils.deserialize(JsonUtils.serialize(addDto), Menu.class);
+        } catch (IOException e) {
+            throw new AdviceException("菜单转换失败");
+        }
+
+        if(menu.getParentId() != null){
+            Menu parentMenu = menuMapper.selectByPrimaryKey(menu.getParentId());
+            if(parentMenu == null){
+                throw new AdviceException("父菜单不存在");
+            }
+
+            menu.setLevel(parentMenu.getLevel() + 1);
+            menu.setParentPath(generateMenuPath(parentMenu));
+        }else{
+            menu.setLevel(0);
+            menu.setParentPath(null);
+        }
+
+        menu.setCreator(addDto.getOperator());
+        menu.setModifier(addDto.getOperator());
+        if(menu.getEnabled() == null){
+            menu.setEnabled(false);
+        }
+        menu.setDeleted(false);
+        Date now = menuMapper.selectCurrentDateTime();
+        menu.setCreateTime(now);
+        menu.setModifyTime(now);
+
+        return menu;
     }
 
 }

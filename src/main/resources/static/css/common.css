@@ -14,6 +14,13 @@ div.dataTables_length {
 }
 /* -----覆盖DataTable样式-----end */
 
+/* -----表单样式-----begin */
+.label-required:before {
+    content: "*";
+    color: red;
+}
+/* -----表单样式-----end */
+
 /* -----404、500、error页面默认样式覆盖-----begin */
 .error-page > .error-content {
     padding-top: 20px;

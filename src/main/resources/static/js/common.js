@@ -154,8 +154,22 @@
             }
 
             return value;
-        }
+        },
+        treeToList: function (tree, childNameOrAccessor) {
+            function treeToListInternal(tree, list, childNameOrAccessor) {
+                _.forEach(tree, function (item) {
+                    list.push(item);
+                    var childs = TypeUtil.isFunction(childNameOrAccessor) ? childNameOrAccessor(item) : item[childNameOrAccessor];
+                    treeToListInternal(childs, list, childNameOrAccessor);
+                });
 
+                return list;
+            }
+
+            childNameOrAccessor = childNameOrAccessor || 'childs';
+
+            return treeToListInternal(tree, [], childNameOrAccessor);
+        }
     };
 
     global.EventUtil = {

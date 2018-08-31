@@ -51,4 +51,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         return null;
     }
+
+    @Override
+    public String getAuthenticatedUsername(){
+        User user = getAuthenticatedUser();
+        if(user != null){
+            return user.getUsername();
+        }
+
+        return null;
+    }
 }

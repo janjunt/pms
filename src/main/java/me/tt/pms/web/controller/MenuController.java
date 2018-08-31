@@ -2,16 +2,22 @@ package me.tt.pms.web.controller;
 
 import com.github.pagehelper.PageInfo;
 import me.tt.pms.core.domain.Menu;
+import me.tt.pms.core.domain.dto.MenuAddDto;
+import me.tt.pms.core.domain.dto.MenuDto;
 import me.tt.pms.core.domain.dto.MenuSearchDto;
+import me.tt.pms.service.authentication.AuthenticationService;
 import me.tt.pms.service.resource.MenuService;
+import me.tt.pms.web.AjaxResult;
 import me.tt.pms.web.datatable.DataSourceRequest;
 import me.tt.pms.web.datatable.DataSourceResult;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @ClassName: MenuController
@@ -24,6 +30,8 @@ import javax.annotation.Resource;
 public class MenuController {
     @Resource
     private MenuService menuService;
+    @Resource
+    private AuthenticationService authenticationService;
 
 
     /**
@@ -44,7 +52,22 @@ public class MenuController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String add(){
-        return "menu/add";
+    public ModelAndView add(){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("menu/add");
+
+        List<MenuDto> menus = menuService.getAllMenusTree();
+        mv.addObject("menusTree", menus);
+
+        return mv;
+    }
+
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    @ResponseBody
+    public AjaxResult add(MenuAddDto addDto) {
+        addDto.setOperator(authenticationService.getAuthenticatedUsername());
+        menuService.add(addDto);
+
+        return AjaxResult.success();
     }
 }

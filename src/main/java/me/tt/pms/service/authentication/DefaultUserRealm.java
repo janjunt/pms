@@ -45,6 +45,6 @@ public class DefaultUserRealm extends AuthorizingRealm {
         }
 
         usernamePasswordToken.setPassword(user.getPassword().toCharArray());
-        return new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), getName());
+        return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
     }
 }

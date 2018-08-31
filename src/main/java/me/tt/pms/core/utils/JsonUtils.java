@@ -1,6 +1,7 @@
 package me.tt.pms.core.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public final class JsonUtils {
      */
     public static <T> T deserialize(String json, Class<T> t) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
         return mapper.readValue(json, t);
     }

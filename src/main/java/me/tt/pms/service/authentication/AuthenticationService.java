@@ -27,4 +27,10 @@ public interface AuthenticationService {
      * @return 用户
      */
     User getAuthenticatedUser();
+
+    /**
+     * 获取已认证用户名称
+     * @return 用户名称
+     */
+    String getAuthenticatedUsername();
 }

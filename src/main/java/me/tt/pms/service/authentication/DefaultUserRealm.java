@@ -5,6 +5,7 @@ import me.tt.pms.core.domain.User;
 import me.tt.pms.core.domain.constants.UserLoginResult;
 import me.tt.pms.service.user.UserService;
 import me.tt.pms.web.AjaxResult;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -45,6 +46,6 @@ public class DefaultUserRealm extends AuthorizingRealm {
         }
 
         usernamePasswordToken.setPassword(user.getPassword().toCharArray());
-        return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
+        return new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), getName());
     }
 }

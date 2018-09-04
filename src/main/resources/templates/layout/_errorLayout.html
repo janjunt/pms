@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">权限管理系统</title>
+
+    <link rel="stylesheet" th:href="@{/vendor/plugins/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/vendor/plugins/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/vendor/plugins/iCheck/square/blue.css}">
+    <link rel="stylesheet" th:href="@{/vendor/css/AdminLTE.min.css}">
+    <link rel="stylesheet" th:href="@{/vendor/css/skins/_all-skins.min.css}">
+    <link rel="stylesheet" th:href="@{/vendor/plugins/notific8/notific8.min.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+    <header class="main-header">
+        <a href="../../index2.html" class="logo">
+            <span class="logo-mini"><b>P</b>MS</span>
+            <span class="logo-lg"><b>权限</b>管理系统</span>
+        </a>
+        <nav class="navbar navbar-static-top">
+            <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+            </a>
+        </nav>
+    </header>
+    <aside class="main-sidebar">
+        <section class="sidebar">
+            <ul class="sidebar-menu" th:insert="~{layout/_menu::menuTree(null, 0)}">
+            </ul>
+        </section>
+    </aside>
+    <div class="content-wrapper">
+        <th:block layout:fragment="bodySection">
+        </th:block>
+    </div>
+    <footer class="main-footer">
+        <div class="pull-right hidden-xs">
+            <b>Version</b> 1.0.0
+        </div>
+        <strong>Copyright &copy; 2018-2020 <a href="https://tt.me">tt.me</a>.</strong> All rights reserved.
+    </footer>
+</div>
+<script th:src="@{/vendor/plugins/jquery/jquery.min.js}"></script>
+<script th:src="@{/vendor/plugins/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/vendor/plugins/jquery-slimscroll/jquery.slimscroll.min.js}"></script>
+<script th:src="@{/vendor/plugins/iCheck/icheck.min.js}"></script>
+<script th:src="@{/vendor/plugins/doT.js}"></script>
+<script th:src="@{/vendor/plugins/lodash.min.js}"></script>
+<script th:src="@{/vendor/plugins/moment.js}"></script>
+<script th:src="@{/vendor/plugins/jquery.blockUI.js}"></script>
+<script th:src="@{/vendor/plugins/notific8/jquery.notific8.min.js}"></script>
+<script th:src="@{/vendor/js/adminlte.min.js}"></script>
+
+<script th:src="@{/js/common.js}"></script>
+<script th:src="@{/js/common-business.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+    App.mapPath = function(url) {
+        return PathUtil.combine(/*[[@{/}]]*/ '/', url);
+    };
+</script>
+<script>
+    $(document).ready(function () {
+        $('.sidebar-menu').tree()
+    })
+</script>
+<th:block layout:fragment="footSection">
+</th:block>
+</body>
+</html>

@@ -1,10 +1,13 @@
 package me.tt.pms.service.authentication.impl;
 
+import me.tt.pms.core.AdviceException;
 import me.tt.pms.core.domain.User;
+import me.tt.pms.core.domain.constants.UserLoginResult;
 import me.tt.pms.core.domain.dto.MenuDto;
 import me.tt.pms.core.domain.dto.UserLoginDto;
 import me.tt.pms.service.authentication.AuthenticationService;
 import me.tt.pms.service.resource.MenuService;
+import me.tt.pms.service.user.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -21,18 +24,36 @@ import java.util.List;
  */
 @Service("authenticationService")
 public class AuthenticationServiceImpl implements AuthenticationService {
+    /**
+     * 菜单session名称
+     */
+    private static final String MENU_SESSION_NAME = "menus";
+    /**
+     * 用户session名称
+     */
+    private static final String USER_SESSION_NAME = "user";
+
+
     @Resource
     private MenuService menuService;
+    @Resource
+    private UserService userService;
 
 
     @Override
     public void signIn(UserLoginDto loginDto) {
+        User user = userService.getUserByUsername(loginDto.getUsername());
+        if(user == null){
+            throw new AdviceException(UserLoginResult.NotExist.getName());
+        }
+
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(loginDto.getUsername(), loginDto.getPassword(), loginDto.getRememberMe());
 
         subject.login(token);
-        List<MenuDto> menus = menuService.getMenusTreeByUserId(0L);
-        subject.getSession().setAttribute("menus", menus);
+        List<MenuDto> menus = menuService.getMenusTreeByUserId(user.getId());
+        subject.getSession().setAttribute(MENU_SESSION_NAME, menus);
+        subject.getSession().setAttribute(USER_SESSION_NAME, user);
     }
 
     @Override
@@ -46,7 +67,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public User getAuthenticatedUser() {
         Subject subject = SecurityUtils.getSubject();
         if(subject.isAuthenticated()){
-            return (User) subject.getPrincipal();
+            if(subject.getSession().getAttribute(USER_SESSION_NAME) == null){
+                String username = (String) subject.getPrincipal();
+                User user = userService.getUserByUsername(username);
+                if(user == null){
+                    return null;
+                }
+                subject.getSession().setAttribute(USER_SESSION_NAME, user);
+
+            }
+
+            return (User) subject.getSession().getAttribute(USER_SESSION_NAME);
         }
 
         return null;

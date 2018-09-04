@@ -8,11 +8,11 @@ package me.tt.pms.core.domain.constants;
  */
 public enum UserLoginResult {
     Success(1, "成功"),
-    NotExist(1, "用户不存在"),
-    WrongPassword(1, "密码错误"),
+    NotExist(1, "用户名或密码不正确"),
+    WrongPassword(1, "用户名或密码不正确"),
     NotActive(1, "用户未激活"),
     Disabled(1, "用户已禁用"),
-    Deleted(1, "用户已删除");
+    Deleted(1, "用户名或密码不正确");
 
     /**
      * 编码

@@ -1,5 +1,6 @@
 package me.tt.pms.web.config;
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import me.tt.pms.service.authentication.DefaultUserRealm;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.cache.ehcache.EhCacheManager;
@@ -93,5 +94,10 @@ public class ShiroConfig {
         defaultWebSessionManager.setSessionIdUrlRewritingEnabled(false);
 
         return defaultWebSessionManager;
+    }
+
+    @Bean
+    public ShiroDialect shiroDialect() {
+        return new ShiroDialect();
     }
 }

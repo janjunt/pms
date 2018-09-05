@@ -23,17 +23,21 @@ public final class StringUtils {
      * @param paddingChar 用于补齐的字符
      * @return
      */
-    public static String padLeft(String value, int width, char paddingChar) {
+    public static String padLeft(String value, int width, Character paddingChar) {
         int diff = width - value.length();
         if (diff <= 0) {
             return value;
         }
 
+        if(paddingChar == null){
+            paddingChar = ' ';
+        }
         char[] charr = new char[width];
-        System.arraycopy(value.toCharArray(), 0, charr, 0, value.length());
-        for (int i = value.length(); i < width; i++) {
+        System.arraycopy(value.toCharArray(), 0, charr, diff, value.length());
+        for (int i = 0; i < diff; i++) {
             charr[i] = paddingChar;
         }
+
         return new String(charr);
     }
     /**
@@ -43,17 +47,21 @@ public final class StringUtils {
      * @param paddingChar 用于补齐的字符
      * @return
      */
-    public static String padRight(String value, int width, char paddingChar) {
+    public static String padRight(String value, int width, Character paddingChar) {
         int diff = width - value.length();
         if (diff <= 0) {
             return value;
         }
 
+        if(paddingChar == null){
+            paddingChar = ' ';
+        }
         char[] charr = new char[width];
-        System.arraycopy(value.toCharArray(), 0, charr, diff, value.length());
-        for (int i = 0; i < diff; i++) {
+        System.arraycopy(value.toCharArray(), 0, charr, 0, value.length());
+        for (int i = value.length(); i < width; i++) {
             charr[i] = paddingChar;
         }
+
         return new String(charr);
     }
 

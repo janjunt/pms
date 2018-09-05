@@ -1,6 +1,7 @@
 package me.tt.pms.service.security.impl;
 
 import me.tt.pms.core.AdviceException;
+import me.tt.pms.core.utils.StringUtils;
 import me.tt.pms.service.security.EncryptionService;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.stereotype.Service;
@@ -61,7 +62,7 @@ public class EncryptionServiceImpl implements EncryptionService {
             StringBuilder hashHex = new StringBuilder();
             byte[] hashBuffer = md.digest();
             for (byte hashByte : hashBuffer) {
-                hashHex.append(Integer.toHexString(hashByte & 0xff));
+                hashHex.append(StringUtils.padLeft(Integer.toHexString(hashByte & 0xff), 2, '0'));
             }
 
             return hashHex.toString();

@@ -16,6 +16,47 @@ public final class StringUtils {
         return null == value || value.length() == 0;
     }
 
+    /**
+     * 左补齐
+     * @param value 源字符串值
+     * @param width 宽度
+     * @param paddingChar 用于补齐的字符
+     * @return
+     */
+    public static String padLeft(String value, int width, char paddingChar) {
+        int diff = width - value.length();
+        if (diff <= 0) {
+            return value;
+        }
+
+        char[] charr = new char[width];
+        System.arraycopy(value.toCharArray(), 0, charr, 0, value.length());
+        for (int i = value.length(); i < width; i++) {
+            charr[i] = paddingChar;
+        }
+        return new String(charr);
+    }
+    /**
+     * 右补齐
+     * @param value 源字符串值
+     * @param width 宽度
+     * @param paddingChar 用于补齐的字符
+     * @return
+     */
+    public static String padRight(String value, int width, char paddingChar) {
+        int diff = width - value.length();
+        if (diff <= 0) {
+            return value;
+        }
+
+        char[] charr = new char[width];
+        System.arraycopy(value.toCharArray(), 0, charr, diff, value.length());
+        for (int i = 0; i < diff; i++) {
+            charr[i] = paddingChar;
+        }
+        return new String(charr);
+    }
+
 
     private StringUtils(){}
 }
